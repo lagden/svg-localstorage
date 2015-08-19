@@ -11,10 +11,12 @@
 		global.svgLocalstorage = mod.exports;
 	}
 })(this, function (exports, module) {
+	/* global window */
+
 	'use strict';
 
-	function svgLocalstorage(window, file, revision) {
-		var cbr = arguments.length <= 3 || arguments[3] === undefined ? undefined : arguments[3];
+	function svgLocalstorage(file, revision) {
+		var cbr = arguments.length <= 2 || arguments[2] === undefined ? undefined : arguments[2];
 
 		cbr = typeof cbr === 'function' ? cbr : function () {
 			return false;
@@ -22,39 +24,52 @@
 		var request = undefined;
 		var data = undefined;
 		var isListening = false;
-		var document = window.document;
-		var localStorage = window.localStorage;
-		var XMLHttpRequest = window.XMLHttpRequest;
+		var SVGrev = 'SVGrev';
+		var SVGdata = 'SVGdata';
+
+		var doc = window.document;
+		var lS = window.localStorage;
+		var XHR = window.XMLHttpRequest;
 		var add = function add() {
-			document.body.insertAdjacentHTML('afterbegin', data);
+			doc.body.insertAdjacentHTML('afterbegin', data);
 			if (isListening) {
-				document.removeEventListener('DOMContentLoaded', add);
+				doc.removeEventListener('DOMContentLoaded', add);
 				isListening = false;
 			}
 		};
 		var insert = function insert() {
-			if (document.body) {
+			if (doc.body) {
 				add();
 			} else {
 				isListening = true;
-				document.addEventListener('DOMContentLoaded', add);
+				doc.addEventListener('DOMContentLoaded', add);
 			}
 		};
 
-		if (localStorage.getItem('inlineSVGrev') === revision) {
-			data = localStorage.getItem('inlineSVGdata');
+		var testA = !doc.createElementNS;
+		var testB = !doc.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect;
+		if (testA || testB) {
+			if (svgLocalstorage.addShim === false) {
+				svgLocalstorage.addShim = true;
+				doc.createElement('svg');
+				doc.createElement('use');
+			}
+		}
+
+		if (lS.getItem(SVGrev) === revision) {
+			data = lS.getItem(SVGdata);
 			if (data) {
 				insert();
 				cbr(data);
 			}
 		} else {
-			request = new XMLHttpRequest();
+			request = new XHR();
 			request.open('GET', file, true);
 			request.onload = function () {
 				if (request.status >= 200 && request.status < 400) {
 					data = request.responseText;
-					localStorage.setItem('inlineSVGdata', data);
-					localStorage.setItem('inlineSVGrev', revision);
+					lS.setItem(SVGdata, data);
+					lS.setItem(SVGrev, revision);
 					insert();
 					cbr(data);
 				}
@@ -62,6 +77,8 @@
 			request.send();
 		}
 	}
+
+	svgLocalstorage.addShim = false;
 
 	module.exports = svgLocalstorage;
 });
