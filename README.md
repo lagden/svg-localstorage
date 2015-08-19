@@ -17,13 +17,8 @@ npm i svg-localstorage --save
 It's very simple.
 
 ```javascript
-<<<<<<< HEAD
-svgLocalStorage(window, 'svg-file.html', '123', svg => {
+svgLocalStorage('sprite.svg', '0.2.0', svg => {
 	console.log(svg);
-=======
-svgLocalStorage(window, 'sprite.svg', '0.1.0', function cb(data) {
-	console.log('--->optional', data);
->>>>>>> cefbc0fddecd529a1118bb9c4627f502572f2e5d
 });
 ```
 
@@ -55,7 +50,17 @@ Web Storage - name/value pairs ✔ 92.75% ◒ 0.04% [W3C Recommendation]
   Chrome ✔
   Safari ✘ 3.1+ ✔ 4+
   Opera ✘ 9+ ✔ 10.5+
+
+DOMContentLoaded ✔ 95.58% ◒ 0% [WHATWG Living Standard]
+
+  IE ✘ 5.5+ ✔ 9+
+  Edge ✔
+  Firefox ✔
+  Chrome ✔
+  Safari ✔
+  Opera ✔
 ```
+
 
 ## License
 
