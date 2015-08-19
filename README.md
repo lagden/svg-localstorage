@@ -16,7 +16,7 @@ npm i svg-localstorage --save
 It's very simple.
 
 ```javascript
-svgLocalStorage(window, 'svg-file.html', '123', function cb(data) {
+svgLocalStorage(window, 'sprite.svg', '0.1.0', function cb(data) {
 	console.log('--->optional', data);
 });
 ```
