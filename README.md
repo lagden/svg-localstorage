@@ -5,7 +5,7 @@
 
 ## Install
 
-Via [NPM](http://.npmjs.com/)
+Via [npm](https://www.npmjs.com/)
 
 ```
 npm i svg-localstorage --save
