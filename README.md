@@ -12,17 +12,43 @@ npm i svg-localstorage --save
 ```
 
 
-### Usage
+## Usage
 
 It's very simple.
 
 ```javascript
-svgLocalStorage('sprite.svg', '0.2.0', svg => {
+svgLocalstorage('sprite.svg', '0.2.0', svg => {
 	console.log(svg);
 });
 ```
 
-### Dev
+
+## API
+
+### svgLocalstorage(file, revision, callback)
+
+#### file
+
+*Required*  
+Type: `string`
+
+File path which you wish caching.
+
+
+#### revision
+*Required*  
+Type: `string`
+
+Check if revision exists before loading the file.
+
+
+#### callback
+Type: `function`
+
+Return one argument with file content.
+
+
+## Dev
 
 ```
 npm i
@@ -30,7 +56,7 @@ npm run build
 npm test
 ```
 
-### Can I use?
+## Can I use?
 
 ```
 SVG (basic support) ✔ 93.05% ◒ 2.46% [W3C Recommendation]
