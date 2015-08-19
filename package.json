@@ -1,0 +1,41 @@
+{
+  "name": "svg-localstorage",
+  "version": "0.1.0",
+  "description": "Plugin to caching SVG sprite in localstorage",
+  "main": "svg-localstorage.js",
+  "keywords": [
+    "svg",
+    "localstorage"
+  ],
+  "scripts": {
+    "build": "xo && babel src/svg-localstorage.js -m umd --stage 1 --out-file svg-localstorage.js",
+    "test": "grunt"
+  },
+  "xo": {
+    "envs": [
+      "es6"
+    ],
+    "esnext": true,
+    "ignores": [
+      "test/**",
+      "svg-localstorage.js"
+    ],
+    "rules": {
+      "arrow-parens": [
+        1,
+        "always"
+      ]
+    }
+  },
+  "author": "Thiago Lagden",
+  "license": "ISC",
+  "devDependencies": {
+    "babel": "^5.8.21",
+    "grunt": "^0.4.5",
+    "grunt-contrib-connect": "^0.11.2",
+    "grunt-contrib-qunit": "^0.7.0",
+    "jit-grunt": "^0.9.1",
+    "time-grunt": "^1.2.1",
+    "xo": "^0.6.0"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "svg-localstorage",
+  "version": "0.1.0",
+  "description": "Plugin to caching SVG sprite in localstorage",
+  "keywords": [
+    "svg",
+    "localstorage"
+  ]
+}
