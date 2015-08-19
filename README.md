@@ -1,6 +1,6 @@
 # SVG Local Storage [![Build Status](https://travis-ci.org/lagden/svg-localstorage.svg?branch=master)](https://travis-ci.org/lagden/svg-localstorage)
 
-> Plugin to caching SVG sprite in localstorage
+> Plugin for caching `SVG sprite` in `localstorage`
 
 
 ## Install
