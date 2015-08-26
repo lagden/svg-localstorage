@@ -17,35 +17,36 @@ npm i svg-localstorage --save
 It's very simple.
 
 ```javascript
-svgLocalstorage('sprite.svg', '0.2.0', svg => {
-	console.log(svg);
-});
+svgLocalstorage('sprite.svg', '1.0.0')
+	.then(svg => {
+		document.body.insertAdjacentHTML('afterbegin', svg);
+	})
+	.catch(err => {
+		console.log(err);
+	});
 ```
 
 
 ## API
 
-### svgLocalstorage(file, revision, callback)
+### svgLocalstorage(file, revision)
+
+This method return a `Promise`
+
 
 #### file
 
-*Required*  
+*Required*
 Type: `string`
 
 File path which you wish caching.
 
 
 #### revision
-*Required*  
+*Required*
 Type: `string`
 
 Check if revision exists before loading the file.
-
-
-#### callback
-Type: `function`
-
-Return one argument with file content.
 
 
 ## Dev
@@ -77,14 +78,14 @@ Web Storage - name/value pairs ✔ 92.75% ◒ 0.04% [W3C Recommendation]
   Safari ✘ 3.1+ ✔ 4+
   Opera ✘ 9+ ✔ 10.5+
 
-DOMContentLoaded ✔ 95.58% ◒ 0% [WHATWG Living Standard]
+Promises ✔ 63.57% ◒ 0.14% [Other]
 
-  IE ✘ 5.5+ ✔ 9+
+  IE ✘
   Edge ✔
-  Firefox ✔
-  Chrome ✔
-  Safari ✔
-  Opera ✔
+  Firefox ✘ 2+ ◒ 27+ ✔ 29+
+  Chrome ✘ 4+ ◒ 32+ ✔ 33+
+  Safari ✘ 3.1+ ✔ 7.1+
+  Opera ✘ 9+ ◒ 19+ ✔ 20+
 ```
 
 

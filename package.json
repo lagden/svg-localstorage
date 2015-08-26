@@ -1,6 +1,6 @@
 {
   "name": "svg-localstorage",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Plugin to caching SVG sprite in localstorage",
   "main": "svg-localstorage.js",
   "keywords": [

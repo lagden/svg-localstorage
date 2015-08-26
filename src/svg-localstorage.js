@@ -2,30 +2,48 @@
 
 'use strict';
 
-function svgLocalstorage(file, revision, cbr = undefined) {
-	cbr = (typeof cbr === 'function') ? cbr : () => false;
-	let request;
-	let data;
-	let isListening = false;
+function req(...args) {
+	const [XHR, lS, file, revision, SVGrev, SVGdata] = args;
+	return new Promise((resolve, reject) => {
+		function transferComplete(event) {
+			const t = event.target;
+			t.removeEventListener('load', transferComplete, false);
+			if (t.status >= 200 && t.status < 400) {
+				const data = t.responseText;
+				lS.setItem(SVGdata, data);
+				lS.setItem(SVGrev, revision);
+				resolve(data);
+			} else {
+				reject(Error(t.statusText));
+			}
+		}
+
+		function transferFailed(event) {
+			const t = event.target;
+			t.removeEventListener('load', transferComplete, false);
+			reject(Error('An error occurred while transferring the file.'));
+		}
+
+		function transferCanceled(event) {
+			const t = event.target;
+			t.removeEventListener('load', transferComplete, false);
+			reject(Error('The transfer has been canceled by the user.'));
+		}
+
+		const request = new XHR();
+		request.addEventListener('load', transferComplete, false);
+		request.addEventListener('error', transferFailed, false);
+		request.addEventListener('abort', transferCanceled, false);
+		request.open('GET', file, true);
+		request.send();
+	});
+}
+
+function svgLocalstorage(file, revision) {
 	const [SVGrev, SVGdata] = ['SVGrev', 'SVGdata'];
 	const doc = window.document;
 	const lS = window.localStorage;
 	const XHR = window.XMLHttpRequest;
-	const add = () => {
-		doc.body.insertAdjacentHTML('afterbegin', data);
-		if (isListening) {
-			doc.removeEventListener('DOMContentLoaded', add);
-			isListening = false;
-		}
-	};
-	const insert = () => {
-		if (doc.body) {
-			add();
-		} else {
-			isListening = true;
-			doc.addEventListener('DOMContentLoaded', add);
-		}
-	};
 
 	const testA = !doc.createElementNS;
 	const testB = !doc.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect;
@@ -38,25 +56,13 @@ function svgLocalstorage(file, revision, cbr = undefined) {
 	}
 
 	if (lS.getItem(SVGrev) === revision) {
-		data = lS.getItem(SVGdata);
+		const data = lS.getItem(SVGdata);
 		if (data) {
-			insert();
-			cbr(data);
+			return Promise.resolve(data);
 		}
-	} else {
-		request = new XHR();
-		request.open('GET', file, true);
-		request.onload = () => {
-			if (request.status >= 200 && request.status < 400) {
-				data = request.responseText;
-				lS.setItem(SVGdata, data);
-				lS.setItem(SVGrev, revision);
-				insert();
-				cbr(data);
-			}
-		};
-		request.send();
+		return Promise.reject(Error('Data not found'));
 	}
+	return req(XHR, lS, file, revision, SVGrev, SVGdata);
 }
 
 svgLocalstorage.addShim = false;

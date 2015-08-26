@@ -8,20 +8,19 @@ QUnit.module('SVG', {
 	}
 });
 
-QUnit.test('save in localStorage', function(assert) {
+QUnit.test('save in Local Storage and add data on DOM', function(assert) {
 	var done = assert.async();
 
 	function cb(data) {
+		var svg;
+		document.body.insertAdjacentHTML('afterbegin', data);
+		svg = document.querySelector('svg');
+		assert.equal(svg.dataset.added, 'svg-icons');
+		assert.equal(svgLocalstorage.addShim, false);
 		assert.equal(localStorage.getItem('SVGdata'), data);
 		assert.equal(localStorage.getItem('SVGrev'), '0.1.0');
 		done();
 	}
 
-	svgLocalstorage('/test/fixtures/sprite.svg', '0.1.0', cb);
-});
-
-QUnit.test('SVG added', function(assert) {
-	var svg = document.querySelector('svg');
-	assert.equal(svg.dataset.added, 'svg-icons');
-	assert.equal(svgLocalstorage.addShim, false);
+	svgLocalstorage('/test/fixtures/sprite.svg', '0.1.0').then(cb);
 });

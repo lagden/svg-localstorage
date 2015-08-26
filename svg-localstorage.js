@@ -15,36 +15,60 @@
 
 	'use strict';
 
-	function svgLocalstorage(file, revision) {
-		var cbr = arguments.length <= 2 || arguments[2] === undefined ? undefined : arguments[2];
+	function req() {
+		for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+			args[_key] = arguments[_key];
+		}
 
-		cbr = typeof cbr === 'function' ? cbr : function () {
-			return false;
-		};
-		var request = undefined;
-		var data = undefined;
-		var isListening = false;
+		var XHR = args[0];
+		var lS = args[1];
+		var file = args[2];
+		var revision = args[3];
+		var SVGrev = args[4];
+		var SVGdata = args[5];
+
+		return new Promise(function (resolve, reject) {
+			function transferComplete(event) {
+				var t = event.target;
+				t.removeEventListener('load', transferComplete, false);
+				if (t.status >= 200 && t.status < 400) {
+					var data = t.responseText;
+					lS.setItem(SVGdata, data);
+					lS.setItem(SVGrev, revision);
+					resolve(data);
+				} else {
+					reject(Error(t.statusText));
+				}
+			}
+
+			function transferFailed(event) {
+				var t = event.target;
+				t.removeEventListener('load', transferComplete, false);
+				reject(Error('An error occurred while transferring the file.'));
+			}
+
+			function transferCanceled(event) {
+				var t = event.target;
+				t.removeEventListener('load', transferComplete, false);
+				reject(Error('The transfer has been canceled by the user.'));
+			}
+
+			var request = new XHR();
+			request.addEventListener('load', transferComplete, false);
+			request.addEventListener('error', transferFailed, false);
+			request.addEventListener('abort', transferCanceled, false);
+			request.open('GET', file, true);
+			request.send();
+		});
+	}
+
+	function svgLocalstorage(file, revision) {
 		var SVGrev = 'SVGrev';
 		var SVGdata = 'SVGdata';
 
 		var doc = window.document;
 		var lS = window.localStorage;
 		var XHR = window.XMLHttpRequest;
-		var add = function add() {
-			doc.body.insertAdjacentHTML('afterbegin', data);
-			if (isListening) {
-				doc.removeEventListener('DOMContentLoaded', add);
-				isListening = false;
-			}
-		};
-		var insert = function insert() {
-			if (doc.body) {
-				add();
-			} else {
-				isListening = true;
-				doc.addEventListener('DOMContentLoaded', add);
-			}
-		};
 
 		var testA = !doc.createElementNS;
 		var testB = !doc.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect;
@@ -57,25 +81,13 @@
 		}
 
 		if (lS.getItem(SVGrev) === revision) {
-			data = lS.getItem(SVGdata);
+			var data = lS.getItem(SVGdata);
 			if (data) {
-				insert();
-				cbr(data);
+				return Promise.resolve(data);
 			}
-		} else {
-			request = new XHR();
-			request.open('GET', file, true);
-			request.onload = function () {
-				if (request.status >= 200 && request.status < 400) {
-					data = request.responseText;
-					lS.setItem(SVGdata, data);
-					lS.setItem(SVGrev, revision);
-					insert();
-					cbr(data);
-				}
-			};
-			request.send();
+			return Promise.reject(Error('Data not found'));
 		}
+		return req(XHR, lS, file, revision, SVGrev, SVGdata);
 	}
 
 	svgLocalstorage.addShim = false;
