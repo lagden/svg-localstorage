@@ -1,9 +1,39 @@
 {
   "name": "svg-localstorage",
-  "version": "1.0.0",
   "description": "Plugin to caching SVG sprite in localstorage",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Thiago Lagden",
+      "email": "lagden@gmail.com",
+      "homepage": "http://lagden.in"
+    }
+  ],
+  "main": [
+    "svg-localstorage.js"
+  ],
+  "moduleType": [
+    "amd",
+    "globals",
+    "node",
+    "es6"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/lagden/svg-localstorage.git"
+  },
+  "ignore": [
+    "src",
+    "test",
+    "node_modules",
+    "*.md",
+    "Gruntfile.*",
+    "package.json",
+    ".*"
+  ],
   "keywords": [
     "svg",
-    "localstorage"
+    "localstorage",
+    "cache"
   ]
 }
